@@ -3,21 +3,15 @@ name: Build and Deploy to Azure
 on:
   push:
     branches:
-      - main  # main ブランチに push されたら実行
+      - main
 
 env:
-  AZURE_WEBAPP_NAME: streamlit-tutorial
+  AZURE_WEBAPP_NAME: search0607
   AZURE_ACR_NAME: container0603
-  CONTAINER_IMAGE: ${{ env.AZURE_ACR_NAME }}.azurecr.io/container0603:latest
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      AZURE_WEBAPP_NAME: search0607
-      AZURE_ACR_NAME: container0603
-      CONTAINER_IMAGE: container0603.azurecr.io/household:latest
 
     steps:
     - name: Checkout code
@@ -28,21 +22,26 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Build and push Docker image
+    - name: Docker Login to ACR
       uses: azure/docker-login@v1
       with:
         login-server: ${{ env.AZURE_ACR_NAME }}.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    - run: |
-        docker build -t $CONTAINER_IMAGE .
-        docker push $CONTAINER_IMAGE
+    - name: Build and Push Docker Image
+      run: |
+        IMAGE_NAME=${{ env.AZURE_ACR_NAME }}.azurecr.io/household:latest
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+      env:
+        AZURE_ACR_NAME: ${{ env.AZURE_ACR_NAME }}
 
     - name: Deploy to Web App
       run: |
+        IMAGE_NAME=${{ env.AZURE_ACR_NAME }}.azurecr.io/household:latest
         az webapp config container set \
           --name $AZURE_WEBAPP_NAME \
           --resource-group group-1 \
-          --docker-custom-image-name $CONTAINER_IMAGE \
+          --docker-custom-image-name $IMAGE_NAME \
           --docker-registry-server-url https://${{ env.AZURE_ACR_NAME }}.azurecr.io
