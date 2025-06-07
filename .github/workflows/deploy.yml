@@ -1,0 +1,43 @@
+name: Build and Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main  # main ブランチに push されたら実行
+
+env:
+  AZURE_WEBAPP_NAME: streamlit-tutorial
+  AZURE_ACR_NAME: container0603
+  CONTAINER_IMAGE: ${{ env.AZURE_ACR_NAME }}.azurecr.io/container0603:latest
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and push Docker image
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.AZURE_ACR_NAME }}.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - run: |
+        docker build -t $CONTAINER_IMAGE .
+        docker push $CONTAINER_IMAGE
+
+    - name: Deploy to Web App
+      run: |
+        az webapp config container set \
+          --name $AZURE_WEBAPP_NAME \
+          --resource-group group-1 \
+          --docker-custom-image-name $CONTAINER_IMAGE \
+          --docker-registry-server-url https://${{ env.AZURE_ACR_NAME }}.azurecr.io
