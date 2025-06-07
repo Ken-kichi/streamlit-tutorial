@@ -14,5 +14,7 @@ COPY . .
 # Expose Streamlit port
 EXPOSE 8501
 
+RUN which streamlit && streamlit --version
+
 # Run Streamlit app
 CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
