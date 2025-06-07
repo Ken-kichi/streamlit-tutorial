@@ -14,6 +14,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      AZURE_WEBAPP_NAME: search0607
+      AZURE_ACR_NAME: container0603
+      CONTAINER_IMAGE: container0603.azurecr.io/household:latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
