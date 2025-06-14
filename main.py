@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from database import Database
+from src.database import Database
 from views.form import render_add_form, render_delete_form
 from views.charts import render_pie_chart, render_daily_bar_chart, show_summary_metrics
 from views.table import render_data_table
@@ -28,5 +28,5 @@ else:
     st.info("No records found. Please add some entries.")
 
 render_data_table(pd_display_data)
-render_delete_form(db, container, pd_data)
 render_add_form(db, container)
+render_delete_form(db, container, pd_data)

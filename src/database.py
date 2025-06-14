@@ -1,13 +1,11 @@
 from azure.cosmos import CosmosClient,PartitionKey
-import os
 from dotenv import load_dotenv
-from models import Record
+from src.key_container import get_key_container
 
 load_dotenv()
 class Database:
     def __init__(self):
-        self.endpoint = os.environ.get("AZURE_ENDPOINT")
-        self.key = os.environ.get("AZURE_KEY")
+        self.endpoint, self.key = get_key_container()
 
     def container(self,database_name,container_name):
         client = CosmosClient(self.endpoint,self.key)

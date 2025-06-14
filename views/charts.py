@@ -15,6 +15,7 @@ def render_pie_chart(pd_data):
     st.pyplot(fig)
 
 def render_daily_bar_chart(pd_data):
+    st.subheader("📈 Daily Net Income/Expense")
     pd_data["signed_amount"] = pd_data.apply(
         lambda row: row["amount"] if row["entry_type"] == "Income" else -row["amount"], axis=1
     )

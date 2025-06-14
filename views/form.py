@@ -1,11 +1,12 @@
 import streamlit as st
 from datetime import date
 from typing import get_args
-from models import Record
+from src.models import Record
 
 def render_add_form(db, container):
+    st.subheader("Add a Record")
+
     with st.form("entry_form"):
-        st.subheader("Add a Record")
 
         col1, col2 = st.columns(2)
         with col1:
@@ -34,6 +35,7 @@ def render_add_form(db, container):
             st.rerun()
 
 def render_delete_form(db, container, pd_data):
+    st.subheader("Delete a Record")
     with st.form("delete_form"):
         delete_id = st.selectbox("Delete ID", pd_data["id"])
         delete_submitted = st.form_submit_button("Delete")
