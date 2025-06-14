@@ -16,8 +16,7 @@
 ## コンテナ作成
 
 ```bash
-~/Desktop/streamlit_dev $ uv pip install streamlit pandas matplotlib
-```
+~/Desktop/streamlit_dev $ uv pip install streamlit pandas matplotlib azure-cosmos azure-identity
 
 ```bash
 ~/Desktop/streamlit_dev $ uv pip freeze > requirements.txt
